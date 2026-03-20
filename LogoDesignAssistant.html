@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Logo Design Assistant</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #1B2A4A;
+      --navy2:  #243761;
+      --gold:   #C8A84B;
+      --gold2:  #E2C06A;
+      --white:  #FFFFFF;
+      --offwhite: #F4F6FA;
+      --gray:   #D0D6E2;
+      --darkgray: #7A849A;
+      --bubble-user: #1B2A4A;
+      --bubble-bot:  #FFFFFF;
+      --radius: 18px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--offwhite);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--navy);
+      padding: 0 20px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,.35);
+      position: relative;
+    }
+    .logo-badge {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -1px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 3px var(--gold2);
+    }
+    .header-text h1 {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+    .header-text p {
+      color: var(--gold2);
+      font-size: 12px;
+      margin-top: 1px;
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      background: #4ADE80;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .4; }
+    }
+
+    /* ── QUICK REPLIES TOP BAR ── */
+    .quick-bar {
+      background: var(--navy2);
+      padding: 10px 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+      border-bottom: 2px solid var(--gold);
+    }
+    .quick-bar span {
+      font-size: 11px;
+      color: var(--gold2);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      font-weight: 600;
+      align-self: center;
+      white-space: nowrap;
+    }
+    .qbtn {
+      background: rgba(200,168,75,.15);
+      border: 1.5px solid var(--gold);
+      color: var(--gold2);
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .qbtn:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    /* ── CHAT AREA ── */
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.bot  { justify-content: flex-start; }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .bubble {
+      max-width: min(480px, 80vw);
+      padding: 11px 15px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      line-height: 1.55;
+      box-shadow: 0 1px 4px rgba(0,0,0,.1);
+    }
+    .msg-row.user .bubble {
+      background: var(--bubble-user);
+      color: var(--white);
+      border-bottom-right-radius: 4px;
+    }
+    .msg-row.bot .bubble {
+      background: var(--bubble-bot);
+      color: #1a1a2e;
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--gray);
+    }
+
+    /* Rich content inside bubbles */
+    .bubble h3 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bubble h3 .tag {
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 10px;
+      letter-spacing: .4px;
+    }
+    .bubble h3 .tag.alt {
+      background: var(--navy);
+      color: var(--gold);
+    }
+    .bubble ol, .bubble ul {
+      padding-left: 18px;
+      margin: 6px 0;
+    }
+    .bubble li {
+      margin-bottom: 5px;
+      font-size: 13.5px;
+    }
+    .bubble .step-block {
+      background: var(--offwhite);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin: 8px 0;
+    }
+    .bubble .step-block.alt {
+      border-left-color: var(--navy);
+    }
+    .bubble .step-block.alt2 {
+      border-left-color: #7C3AED;
+    }
+    .bubble .tip {
+      background: #FFF8E7;
+      border: 1px solid #E8D08A;
+      border-radius: 8px;
+      padding: 7px 11px;
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: #6B4F00;
+    }
+    .bubble .tip::before {
+      content: "💡 Pro Tip: ";
+      font-weight: 700;
+    }
+    .bubble .vid-ref {
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      border-radius: 8px;
+      padding: 7px 11px;
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: #3730A3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bubble kbd {
+      background: #e0e4ef;
+      border: 1px solid #b0b8cc;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 12px;
+      font-family: monospace;
+      color: var(--navy);
+    }
+    .bubble .divider {
+      border: none;
+      border-top: 1px solid var(--gray);
+      margin: 10px 0;
+    }
+    .bubble .method-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      color: var(--darkgray);
+      margin-bottom: 4px;
+    }
+
+    /* Typing indicator */
+    .typing { display: flex; align-items: center; gap: 4px; padding: 12px 14px; }
+    .typing span {
+      width: 7px; height: 7px;
+      background: var(--darkgray);
+      border-radius: 50%;
+      animation: bounce .9s ease-in-out infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: .2s; }
+    .typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-6px); }
+    }
+
+    /* Inline quick replies inside chat */
+    .inline-quick {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .iqbtn {
+      background: var(--offwhite);
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      border-radius: 16px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .iqbtn:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* ── INPUT AREA ── */
+    #input-area {
+      background: var(--white);
+      border-top: 2px solid var(--gray);
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    #msg-input {
+      flex: 1;
+      border: 1.5px solid var(--gray);
+      border-radius: 24px;
+      padding: 10px 16px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+      background: var(--offwhite);
+    }
+    #msg-input:focus { border-color: var(--gold); background: var(--white); }
+    #msg-input::placeholder { color: var(--darkgray); }
+    #send-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--navy);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, transform .1s;
+      flex-shrink: 0;
+    }
+    #send-btn:hover { background: var(--navy2); transform: scale(1.05); }
+    #send-btn svg { width: 18px; height: 18px; fill: var(--white); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-badge">P</div>
+  <div class="header-text">
+    <h1>Logo Design Assistant</h1>
+    <p><span class="status-dot"></span>Graphic Arts · Always here to help</p>
+  </div>
+</header>
+
+<!-- QUICK REPLY BAR -->
+<div class="quick-bar">
+  <span>Jump to:</span>
+  <button class="qbtn" onclick="ask('How do I save my logo as a PNG?')">💾 Save as PNG</button>
+  <button class="qbtn" onclick="ask('How do I convert my logo to black and white?')">⚫ Color → Black &amp; White</button>
+  <button class="qbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ White on Dark Background</button>
+  <button class="qbtn" onclick="ask('What files do I need to submit?')">📁 Required Files</button>
+  <button class="qbtn" onclick="ask('What artboard size should I use?')">📐 Artboard Setup</button>
+</div>
+
+<!-- CHAT -->
+<div id="chat"></div>
+
+<!-- INPUT -->
+<div id="input-area">
+  <input id="msg-input" type="text" placeholder="Ask a question about your logo project…" autocomplete="off"/>
+  <button id="send-btn" onclick="sendMessage()">
+    <svg viewBox="0 0 24 24"><path d="M2 21L23 12 2 3v7l15 2-15 2z"/></svg>
+  </button>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  KNOWLEDGE BASE
+// ─────────────────────────────────────────────
+const KB = [
+
+  // ── SAVE AS PNG ──────────────────────────────
+  {
+    keys: ['save png','export png','png','save as png','export as png','how do i save','export file','save file','300 ppi','300ppi','resolution','use artboards'],
+    response: () => `
+      <h3>💾 Saving Your Logo as a PNG <span class="tag">Phase 9</span></h3>
+
+      <div class="step-block">
+        <div class="method-label">📌 Method 1 — Export As (Recommended)</div>
+        <ol>
+          <li>Go to <strong>File → Export → Export As…</strong></li>
+          <li>Set the format to <strong>PNG</strong></li>
+          <li>Check <strong>"Use Artboards"</strong> — this exports each artboard as its own file</li>
+          <li>Set Resolution to <strong>300 ppi</strong></li>
+          <li>Click <strong>Export All</strong></li>
+        </ol>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="step-block alt">
+        <div class="method-label">🔄 Method 2 — Export for Screens</div>
+        <ol>
+          <li>Go to <strong>File → Export → Export for Screens…</strong> <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>E</kbd></li>
+          <li>Select the <strong>Artboards</strong> tab</li>
+          <li>Choose <strong>PNG</strong> from the format dropdown</li>
+          <li>Set Scale to <strong>1x</strong> and check that size looks right</li>
+          <li>Click <strong>Export Artboard</strong></li>
+        </ol>
+      </div>
+
+      <div class="step-block alt2">
+        <div class="method-label">🕹 Method 3 — Save for Web (Legacy)</div>
+        <ol>
+          <li>Go to <strong>File → Export → Save for Web (Legacy)…</strong> <kbd>Cmd</kbd>+<kbd>Opt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></li>
+          <li>Choose <strong>PNG-24</strong> from the preset dropdown</li>
+          <li>Make sure <strong>Transparency</strong> is checked if you want no background</li>
+          <li>Click <strong>Save</strong></li>
+        </ol>
+      </div>
+
+      <div class="tip">For your submission, use Method 1 at 300 ppi. You need three PNG files: <em>Color</em>, <em>Black &amp; White</em>, and <em>Reversed</em>.</div>
+      <div class="inline-quick">
+        <button class="iqbtn" onclick="ask('How do I convert my logo to black and white?')">⚫ Next: Make B&amp;W version</button>
+        <button class="iqbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ Next: Make Reversed version</button>
+      </div>
+    `
+  },
+
+  // ── BLACK & WHITE ─────────────────────────────
+  {
+    keys: ['black and white','black & white','b&w','bw','grayscale','grey','gray','convert to black','black white','remove color','no color','colorless','monochrome'],
+    response: () => `
+      <h3>⚫ Converting Your Logo to Black &amp; White <span class="tag">Phase 8</span></h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px;">First, always <strong>duplicate your artboard</strong> — never destroy your color version!</p>
+
+      <div class="step-block">
+        <div class="method-label">📌 Method 1 — Manual Fill (Most Control)</div>
+        <ol>
+          <li><strong>Duplicate your artboard:</strong> In the Artboards panel, drag your artboard to the + icon. Or copy all elements and paste to a new artboard.</li>
+          <li>On the duplicate, press <kbd>Cmd</kbd>+<kbd>A</kbd> to select everything</li>
+          <li>Click the <strong>Fill</strong> swatch in the toolbar (bottom left)</li>
+          <li>Click the <strong>black swatch</strong> — all shapes turn black</li>
+          <li>Click the <strong>Stroke</strong> swatch and set it to <strong>None</strong> (the slash box)</li>
+        </ol>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="step-block alt">
+        <div class="method-label">🔄 Method 2 — Edit Colors → Convert to Grayscale</div>
+        <ol>
+          <li>On your duplicate, press <kbd>Cmd</kbd>+<kbd>A</kbd> to select all</li>
+          <li>Go to <strong>Edit → Edit Colors → Convert to Grayscale</strong></li>
+          <li>Illustrator converts each color to its gray equivalent automatically</li>
+          <li>⚠️ This may result in some shapes being dark gray instead of pure black — adjust individually if needed</li>
+        </ol>
+      </div>
+
+      <div class="step-block alt2">
+        <div class="method-label">🎨 Method 3 — Recolor Artwork</div>
+        <ol>
+          <li>On your duplicate, press <kbd>Cmd</kbd>+<kbd>A</kbd></li>
+          <li>Go to <strong>Edit → Recolor Artwork</strong> (or find it in the top control bar)</li>
+          <li>In the dialog, click <strong>Edit</strong> tab</li>
+          <li>Drag the color harmony to the gray/black range, or use the Presets dropdown to select a black &amp; white scheme</li>
+          <li>Click <strong>OK</strong></li>
+        </ol>
+      </div>
+
+      <div class="tip">Check the B&amp;W version by squinting at it — you should still be able to read and recognize the logo without any color helping it.</div>
+      <div class="vid-ref">🎬 Your teacher has a video tutorial: <strong>colorToBW.mov</strong> — ask to see it!</div>
+      <div class="inline-quick">
+        <button class="iqbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ Next: Make Reversed version</button>
+        <button class="iqbtn" onclick="ask('How do I save my logo as a PNG?')">💾 Now save as PNG</button>
+      </div>
+    `
+  },
+
+  // ── WHITE ON DARK BACKGROUND ──────────────────
+  {
+    keys: ['white on dark','dark background','reversed','reverse','white logo','white version','dark bg','white on black','invert','light on dark','white fill','black background'],
+    response: () => `
+      <h3>⚪ White Logo on a Dark Background <span class="tag">Phase 8</span></h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px;">Again — always work on a <strong>duplicate artboard</strong>, not your color version!</p>
+
+      <div class="step-block">
+        <div class="method-label">📌 Method 1 — Manual (Most Reliable)</div>
+        <ol>
+          <li><strong>Duplicate your artboard</strong> (same as B&amp;W step)</li>
+          <li>Draw a <strong>rectangle</strong> that covers the entire artboard using the Rectangle Tool (<kbd>M</kbd>)</li>
+          <li>Fill it <strong>black</strong> (or your brand's dark color)</li>
+          <li>Send it to the back: <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>[</kbd></li>
+          <li>Select all logo shapes (not the background rectangle)</li>
+          <li>Change all fills to <strong>white (#FFFFFF)</strong></li>
+          <li>Remove all strokes</li>
+        </ol>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="step-block alt">
+        <div class="method-label">🔄 Method 2 — Recolor Artwork to White</div>
+        <ol>
+          <li>On your duplicate, select all logo elements (not background)</li>
+          <li>Go to <strong>Edit → Recolor Artwork</strong></li>
+          <li>In the color list, click each color swatch and change it to <strong>white</strong></li>
+          <li>Click <strong>OK</strong></li>
+          <li>Then manually add a black background rectangle behind everything</li>
+        </ol>
+      </div>
+
+      <div class="step-block alt2">
+        <div class="method-label">⚡ Method 3 — Global Color Swatches (Advanced)</div>
+        <ol>
+          <li>If you set up your colors as <strong>Global Swatches</strong> originally, double-click the swatch</li>
+          <li>Change its CMYK/Hex value to white</li>
+          <li>Click <strong>OK</strong> — every shape using that swatch updates instantly</li>
+          <li>Repeat for each swatch, then add a dark background</li>
+        </ol>
+        <p style="font-size:12px;color:#666;margin-top:5px;">This only works if you checked "Global" when creating your color swatches in Phase 6.</p>
+      </div>
+
+      <div class="tip">Make sure your logo still has contrast — if it has multiple white elements, use slight differences in transparency (90% vs 100% opacity) to keep shapes distinct on a dark background.</div>
+      <div class="vid-ref">🎬 Your teacher has a video tutorial: <strong>DarkBG_WhiteLogo.mov</strong> — ask to see it!</div>
+      <div class="inline-quick">
+        <button class="iqbtn" onclick="ask('How do I save my logo as a PNG?')">💾 Now export as PNG</button>
+        <button class="iqbtn" onclick="ask('What files do I need to submit?')">📁 Check submission checklist</button>
+      </div>
+    `
+  },
+
+  // ── REQUIRED FILES ────────────────────────────
+  {
+    keys: ['submit','submission','files','what files','required files','upload','classroom','what do i need','checklist','turn in','hand in'],
+    response: () => `
+      <h3>📁 Required Submission Files <span class="tag">Phase 9</span></h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px;">You must upload <strong>4 files</strong> to Google Classroom. Missing files = point deductions.</p>
+
+      <div class="step-block">
+        <ol>
+          <li><strong>LastName_FirstName_Logo.ai</strong> — Your working Illustrator file with all layers intact. <em>Do NOT flatten layers.</em></li>
+          <li><strong>LastName_FirstName_Logo_Color.png</strong> — Full-color version, white background, 300 ppi</li>
+          <li><strong>LastName_FirstName_Logo_BW.png</strong> — Black-and-white version, white background, 300 ppi</li>
+          <li><strong>LastName_FirstName_Logo_Reversed.png</strong> — White logo on dark/black background, 300 ppi</li>
+        </ol>
+      </div>
+
+      <div class="tip">Upload the files individually — do NOT zip them. Double-check the filenames match exactly before submitting.</div>
+      <div class="inline-quick">
+        <button class="iqbtn" onclick="ask('How do I save my logo as a PNG?')">💾 How to export PNGs</button>
+        <button class="iqbtn" onclick="ask('How do I convert my logo to black and white?')">⚫ Make B&amp;W version</button>
+        <button class="iqbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ Make Reversed version</button>
+      </div>
+    `
+  },
+
+  // ── ARTBOARD SETUP ────────────────────────────
+  {
+    keys: ['artboard','document setup','new document','canvas','file setup','setup','size','10 inch','cmyk','300 ppi','raster','color mode','new file'],
+    response: () => `
+      <h3>📐 Document &amp; Artboard Setup <span class="tag">Phase 3</span></h3>
+
+      <div class="step-block">
+        <ol>
+          <li>Go to <strong>File → New</strong></li>
+          <li>Set artboard size: <strong>10 in × 10 in</strong></li>
+          <li>Color Mode: <strong>CMYK</strong></li>
+          <li>Resolution: <strong>300 ppi</strong></li>
+          <li>Raster Effects: <strong>High</strong></li>
+          <li>Click <strong>Create</strong></li>
+        </ol>
+      </div>
+      <p style="font-size:13px;margin-top:8px;">Then set up your <strong>4 layers</strong> in this order (top → bottom):</p>
+      <div class="step-block alt">
+        <ol>
+          <li><strong>Logotype</strong> — all text</li>
+          <li><strong>Icon / Mark</strong> — your symbol</li>
+          <li><strong>Color Blocks</strong> — solid fill shapes</li>
+          <li><strong>Sketches / Reference</strong> — lock this when not using</li>
+        </ol>
+      </div>
+      <div class="tip">Save your file immediately after setup: File → Save As → .ai format. Then press <kbd>Cmd</kbd>+<kbd>S</kbd> every 10 minutes!</div>
+    `
+  },
+
+  // ── PEN TOOL ─────────────────────────────────
+  {
+    keys: ['pen tool','bezier','anchor point','curve','path','draw','smooth point','corner point','close path','open path'],
+    response: () => `
+      <h3>✏️ Pen Tool Tips</h3>
+      <div class="step-block">
+        <ul>
+          <li><strong>Click</strong> = straight-line anchor point (corner)</li>
+          <li><strong>Click + drag</strong> = curved anchor point (Bezier handle)</li>
+          <li><strong>Close your path:</strong> click back on the very first anchor point — you'll see a small circle next to your cursor</li>
+          <li><strong>Undo a bad point:</strong> <kbd>Cmd</kbd>+<kbd>Z</kbd> removes the last anchor without starting over</li>
+        </ul>
+      </div>
+      <div class="tip">Fewer anchor points = smoother curves. Try to describe the shape with as few clicks as possible, then adjust handles with the Direct Selection Tool (A).</div>
+    `
+  },
+
+  // ── PATHFINDER ────────────────────────────────
+  {
+    keys: ['pathfinder','unite','minus front','divide','exclude','intersect','subtract','merge','combine shapes','pathfinder panel'],
+    response: () => `
+      <h3>🔧 Pathfinder Operations</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px;">Window → Pathfinder to open the panel.</p>
+      <div class="step-block">
+        <ul>
+          <li><strong>Unite</strong> — merges all selected shapes into one combined shape</li>
+          <li><strong>Minus Front</strong> — the top shape cuts a hole out of the bottom shape</li>
+          <li><strong>Intersect</strong> — keeps only the area where shapes overlap</li>
+          <li><strong>Exclude</strong> — removes the overlapping area, keeps the rest</li>
+          <li><strong>Divide</strong> — cuts all shapes at every intersection point</li>
+        </ul>
+      </div>
+      <div class="tip">For a ring shape (circle with a hole): draw a large circle, draw a smaller circle centered on top, select both, then click <strong>Minus Front</strong>.</div>
+    `
+  },
+
+  // ── CREATE OUTLINES ───────────────────────────
+  {
+    keys: ['create outlines','outlines','text outline','convert text','live text','type outline','font outline','text to vector'],
+    response: () => `
+      <h3>🔤 Create Outlines (Text → Vector)</h3>
+      <div class="step-block">
+        <ol>
+          <li>Select your text with the <strong>Selection Tool (V)</strong></li>
+          <li>Go to <strong>Type → Create Outlines</strong> <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd></li>
+          <li>Your text becomes vector anchor points</li>
+        </ol>
+      </div>
+      <p style="font-size:13px;margin-top:6px;color:#c0392b;font-weight:600;">⚠️ Warning: once outlined, you CANNOT edit the text. Make sure spelling, font, and size are finalized first!</p>
+      <div class="tip">After outlining, use the Direct Selection Tool (A) to modify individual letterforms — great for custom logo typography.</div>
+    `
+  },
+
+  // ── LAYERS ────────────────────────────────────
+  {
+    keys: ['layers','layer','layer panel','lock layer','rename layer','layer setup'],
+    response: () => `
+      <h3>📚 Working with Layers</h3>
+      <div class="step-block">
+        <ul>
+          <li><strong>Open Layers panel:</strong> Window → Layers</li>
+          <li><strong>Add a layer:</strong> click the + icon at the bottom of the panel</li>
+          <li><strong>Rename a layer:</strong> double-click the layer name</li>
+          <li><strong>Lock a layer:</strong> click the empty box to the left of the layer name (padlock icon appears)</li>
+          <li><strong>Hide a layer:</strong> click the eye icon to the left</li>
+        </ul>
+      </div>
+      <div class="tip">Always work on the correct layer! Check which layer is highlighted (the pencil icon shows the active layer) before drawing anything.</div>
+    `
+  },
+
+  // ── COLOR SWATCHES ────────────────────────────
+  {
+    keys: ['color','swatch','palette','cmyk','hex','fill','stroke','color panel','color picker','brand color'],
+    response: () => `
+      <h3>🎨 Setting Up Your Color Palette</h3>
+      <div class="step-block">
+        <ol>
+          <li>Open the Swatches panel: <strong>Window → Swatches</strong></li>
+          <li>Double-click an empty spot in the panel to add a new swatch</li>
+          <li>Enter your CMYK or Hex values and give it a name (e.g. "Brand Primary")</li>
+          <li><strong>Check "Global"</strong> if you want to be able to update the color everywhere at once later</li>
+          <li>Click OK</li>
+        </ol>
+      </div>
+      <div class="tip">Use max 2–3 colors. More than that creates visual chaos and costs more to print. Apply color last — always finalize your shapes first.</div>
+    `
+  },
+
+  // ── SCALE TEST ────────────────────────────────
+  {
+    keys: ['scale','small','size','resize','shrink','too small','scale test','1 inch','business card'],
+    response: () => `
+      <h3>🔍 The Scale Test</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:8px;">Your logo must work at every size. Test it!</p>
+      <div class="step-block">
+        <ol>
+          <li>Select everything: <kbd>Cmd</kbd>+<kbd>A</kbd></li>
+          <li>Group it: <kbd>Cmd</kbd>+<kbd>G</kbd></li>
+          <li>Resize to each size and check legibility:</li>
+        </ol>
+        <ul style="margin-top:6px;">
+          <li><strong>3 inches</strong> — business card / email signature</li>
+          <li><strong>1 inch</strong> — social media profile icon</li>
+          <li><strong>0.5 inch</strong> — minimum legibility test</li>
+          <li><strong>12 inches</strong> — storefront sign</li>
+        </ul>
+      </div>
+      <div class="tip">If it gets blurry or illegible small, you have too much detail. Try removing or simplifying the smallest elements.</div>
+    `
+  },
+
+  // ── GREETING ─────────────────────────────────
+  {
+    keys: ['hello','hi','hey','help','start','what can you do','what do you do','hiya','howdy'],
+    response: () => `
+      <h3>👋 Hi! I'm your Logo Design Assistant</h3>
+      <p style="margin-bottom:8px;">I can help you with the most common questions on this project. Try asking me about:</p>
+      <div class="step-block">
+        <ul>
+          <li>💾 <strong>Saving your logo as a PNG</strong></li>
+          <li>⚫ <strong>Converting your logo to black &amp; white</strong></li>
+          <li>⚪ <strong>Making a white logo on a dark background</strong></li>
+          <li>📁 <strong>What files you need to submit</strong></li>
+          <li>📐 <strong>Setting up your artboard</strong></li>
+          <li>✏️ <strong>Pen Tool tips</strong></li>
+          <li>🔧 <strong>Pathfinder operations</strong></li>
+          <li>🔤 <strong>Create Outlines</strong></li>
+        </ul>
+      </div>
+      <p style="font-size:13px;color:#555;margin-top:6px;">Use the quick buttons at the top, or just type your question!</p>
+    `
+  },
+];
+
+// ─────────────────────────────────────────────
+//  CHAT ENGINE
+// ─────────────────────────────────────────────
+const chat = document.getElementById('chat');
+const input = document.getElementById('msg-input');
+
+function scrollToBottom() {
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addMessage(html, role) {
+  const row = document.createElement('div');
+  row.className = `msg-row ${role}`;
+
+  if (role === 'bot') {
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.textContent = 'P';
+    row.appendChild(av);
+  }
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = html;
+  row.appendChild(bub);
+
+  if (role === 'user') {
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.style.background = '#1B2A4A';
+    av.style.color = '#C8A84B';
+    av.textContent = '🎓';
+    av.style.fontSize = '16px';
+    row.appendChild(av);
+  }
+
+  chat.appendChild(row);
+  scrollToBottom();
+}
+
+function showTyping() {
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.id = 'typing-indicator';
+
+  const av = document.createElement('div');
+  av.className = 'avatar';
+  av.textContent = 'P';
+  row.appendChild(av);
+
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  row.appendChild(bub);
+
+  chat.appendChild(row);
+  scrollToBottom();
+  return row;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function findResponse(text) {
+  const lower = text.toLowerCase();
+  for (const item of KB) {
+    if (item.keys.some(k => lower.includes(k))) {
+      return item.response();
+    }
+  }
+  return `
+    <p>I'm not sure about that one! Try asking your teacher, or rephrase your question. Here are the topics I know best:</p>
+    <div class="inline-quick">
+      <button class="iqbtn" onclick="ask('How do I save my logo as a PNG?')">💾 Save as PNG</button>
+      <button class="iqbtn" onclick="ask('How do I convert my logo to black and white?')">⚫ B&amp;W version</button>
+      <button class="iqbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ White on Dark</button>
+      <button class="iqbtn" onclick="ask('What files do I need to submit?')">📁 Submission</button>
+    </div>
+  `;
+}
+
+function ask(question) {
+  addMessage(question, 'user');
+  const typing = showTyping();
+  setTimeout(() => {
+    removeTyping();
+    const resp = findResponse(question);
+    addMessage(resp, 'bot');
+  }, 600 + Math.random() * 400);
+}
+
+function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  ask(text);
+}
+
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// ── Welcome message on load ──
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    addMessage(`
+      <h3>👋 Welcome to the Logo Design Assistant!</h3>
+      <p style="margin-bottom:8px;">I'm here to help you with your <strong>PEAK Outdoor Co. logo project</strong>. The most common questions are in the quick buttons above — or just type anything below!</p>
+      <div class="inline-quick">
+        <button class="iqbtn" onclick="ask('How do I save my logo as a PNG?')">💾 Save as PNG</button>
+        <button class="iqbtn" onclick="ask('How do I convert my logo to black and white?')">⚫ B&amp;W</button>
+        <button class="iqbtn" onclick="ask('How do I make a white logo on a dark background?')">⚪ White on Dark</button>
+      </div>
+    `, 'bot');
+  }, 300);
+});
+</script>
+</body>
+</html>
